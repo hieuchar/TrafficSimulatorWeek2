@@ -7,11 +7,14 @@ import greenfoot.Actor;
 import greenfoot.GreenfootImage;
 
 public class Intersection extends Actor{
-	private static final int GREEN_COUNT = 70;
-	private static final int YELLOW_COUNT = 15;
+	private static final int GREEN_COUNT = 100;
+	private static final int YELLOW_COUNT = 25;
 	private static final int RED_COUNT = GREEN_COUNT + YELLOW_COUNT;
-	private ArrayList<Car> carsOuter, carsInner;
-	
+	private ArrayList<IntersectionListener> curO = new ArrayList<IntersectionListener>(); 
+	private ArrayList<IntersectionListener> prevO = new ArrayList<IntersectionListener>();
+	private ArrayList<IntersectionListener> curI = new ArrayList<IntersectionListener>();
+	private ArrayList<IntersectionListener> prevI = new ArrayList<IntersectionListener>(); 
+	private ArrayList<IntersectionListener> exit =  new ArrayList<IntersectionListener>();
 	private TrafficLight tf1 = null;
 	private TrafficLight tf2 = null;
 	private TrafficLight tf3 = null;
@@ -39,8 +42,8 @@ public class Intersection extends Actor{
 		tf4.setRotation(Orientation.NORTH.getRotation());
 		getWorld().addObject(tf1, this.getX(), getY() + TrafficWorld.ROADWIDTH/2 + tf1.getImage().getHeight()/2);
 		getWorld().addObject(tf2, this.getX(), getY() - TrafficWorld.ROADWIDTH/2 - tf2.getImage().getHeight()/2);
-		getWorld().addObject(tf3, this.getX() - TrafficWorld.ROADWIDTH/2 - tf3.getImage().getWidth(), getY());
-		getWorld().addObject(tf4, this.getX() + TrafficWorld.ROADWIDTH/2 + tf4.getImage().getWidth(), getY());
+		getWorld().addObject(tf3, this.getX() + TrafficWorld.ROADWIDTH/2 + tf3.getImage().getWidth(), getY());
+		getWorld().addObject(tf4, this.getX() - TrafficWorld.ROADWIDTH/2 - tf4.getImage().getWidth(), getY());
 	}
 	public void act(){
 		vLightCounter++;
@@ -97,114 +100,28 @@ public class Intersection extends Actor{
 				}
 				break;
 		}
-		getOuter();
-		getInner();
-		adjustSpeed();
+		notifyApproachingCars();
+		notifyInCars();
+	//	notifyExitingCars();
+		
 		
 	}
-	
-	public void getOuter() {
-		carsOuter = (ArrayList<Car>) (this.getObjectsInRange(TrafficWorld.ROADWIDTH + 10,Car.class));
-		
-	}
-
-	public void getInner() {
-		carsInner = (ArrayList<Car>) (this.getIntersectingObjects(Car.class));		
-		
-	}
-	
-	public void removeOuter() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void removeInner() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void removeDupe(){
-		ArrayList<Car> removal = new ArrayList<Car>();
-		if(!carsInner.isEmpty() && !carsOuter.isEmpty()){
-			for(Car o: carsOuter){
-				for(Car i: carsInner){
-					if(o.equals(i)){
-						removal.add(o);
-					}
-				}
+	public void notifyApproachingCars(){
+		curO = (ArrayList<IntersectionListener>) (this.getObjectsInRange(TrafficWorld.ROADWIDTH + 10,IntersectionListener.class));
+		for(IntersectionListener c : curO){
+			if(prevO.contains(c)){
+				c.approachingIntersection(this);
 			}
 		}
-		carsOuter.removeAll(removal); 
+		prevO = curO;
 	}
-	
-	public void adjustSpeed() {
-		removeDupe();
-//		ArrayList<Car> vCO = new ArrayList<Car>();
-//		ArrayList<Car> hCO = new ArrayList<Car>();
-//		ArrayList<Car> hCI = new ArrayList<Car>();
-//		ArrayList<Car> vCI = new ArrayList<Car>();
-		if(!carsOuter.isEmpty()){
-			for(Car o: carsOuter){
-				o.approachingIntersection(this);
-//				System.out.println(o);
-//				if(o.getOrientation().equals(Orientation.NORTH) || o.getOrientation().equals(Orientation.SOUTH)){
-//					vCO.add(o);
-//				}
-//				else hCO.add(o);
+	public void notifyInCars(){
+		curI = (ArrayList<IntersectionListener>) (this.getIntersectingObjects(IntersectionListener.class));
+		for(IntersectionListener c: curI){
+			if(!prevI.contains(c)){
+				c.inIntersection(this);
 			}
 		}
-//			for(Car vOut:vCO){
-//				if(verticalColor.equals(TrafficLight.Color.YELLOW)){
-//					vOut.setSpeed(1);
-//				}
-//				else if(verticalColor.equals(TrafficLight.Color.RED)){
-//					vOut.setSpeed(0);
-//				}
-//				else vOut.setSpeed(2);
-//			}
-//			for(Car hOut:hCO){
-//				if(horizColor.equals(TrafficLight.Color.YELLOW)){
-//					hOut.setSpeed(1);
-//				}
-//				else if(horizColor.equals(TrafficLight.Color.RED)){
-//					hOut.setSpeed(0);
-//				}
-//				else hOut.setSpeed(2);
-//			}
-//		}
-		if(!carsInner.isEmpty()){
-				for(Car i: carsInner){
-					i.inIntersection(this);
-//					if(i.getOrientation().equals(Orientation.NORTH) || i.getOrientation().equals(Orientation.SOUTH)){
-//						vCI.add(i);
-//					}
-//					else hCI.add(i);
-				}
-		}
-//				for(Car vIn: vCI){
-//					if(verticalColor.equals(TrafficLight.Color.YELLOW)){
-//						vIn.setSpeed(2);
-//					}
-//					else if(verticalColor.equals(TrafficLight.Color.RED)){
-//						vIn.setSpeed(2);
-//					}
-//					else vIn.setSpeed(2);				
-//				}
-//				for(Car hIn: hCI){
-//					if(horizColor.equals(TrafficLight.Color.YELLOW)){
-//						hIn.setSpeed(2);
-//					}
-//					else if(horizColor.equals(TrafficLight.Color.RED)){
-//						hIn.setSpeed(2);
-//					}
-//					else hIn.setSpeed(2);
-//					
-//				}
-//		}
-	}
-	
-	public void clearIntersection() {
-		// TODO Auto-generated method stub
-		
+		prevI = curI;
 	}
 }

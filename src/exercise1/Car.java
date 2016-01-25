@@ -21,29 +21,16 @@ public class Car extends Actor implements IntersectionListener {
 	}
 	@Override
 	public void act(){		
-//		lights = (ArrayList<TrafficLight>)this.getObjectsInRange(image.getWidth()/2, TrafficLight.class);
-//		if(!lights.isEmpty()){
-//			if(lights.get(0).getColor().equals(TrafficLight.Color.RED)){
-//				this.move(0);
-//			}
-//			else if(lights.get(0).getColor().equals(TrafficLight.Color.YELLOW)){
-//				this.move(1);
-//			}
-//			else{
-//				this.move(2);
-//			}
-//		}
-//		else{
 		this.move(speed);
-//		}
 		if(this.isAtEdge()){
 			if(dir.equals(Orientation.NORTH) || dir.equals(Orientation.SOUTH)){
-				if(this.getY() == 0){
-					this.setLocation(this.getX(), TrafficWorld.HEIGHT);
-				}
-				else {
-					this.setLocation(this.getX(), 0);
-				}
+				this.setLocation(this.getX(), (this.getY() == 0)?TrafficWorld.HEIGHT:0);
+//				if(this.getY() == 0){
+//					this.setLocation(this.getX(), TrafficWorld.HEIGHT);
+//				}
+//				else {
+//					this.setLocation(this.getX(), 0);
+//				}
 			}
 			
 			else if(dir.equals(Orientation.EAST) || dir.equals(Orientation.WEST)){
@@ -63,6 +50,9 @@ public class Car extends Actor implements IntersectionListener {
 	}
 	public int getWidth(){
 		return image.getWidth();
+	}
+	public int getHeight(){
+		return image.getHeight();
 	}
 	public String toString(){
 		return ("" + dir);
@@ -104,7 +94,7 @@ public class Car extends Actor implements IntersectionListener {
 		passed = true;
 		if(dir.equals(Orientation.NORTH) || dir.equals(Orientation.SOUTH)){
 			if(in.verticalColor.equals(TrafficLight.Color.RED)){
-				speed = 2;
+				speed = 0;
 			}
 			else if(in.verticalColor.equals(TrafficLight.Color.YELLOW)){
 				speed = 2;
@@ -113,7 +103,7 @@ public class Car extends Actor implements IntersectionListener {
 		}
 		if(dir.equals(Orientation.EAST) || dir.equals(Orientation.WEST)){
 			if(in.horizColor.equals(TrafficLight.Color.RED)){
-				speed = 2;
+				speed = 0;
 			}
 			else if(in.horizColor.equals(TrafficLight.Color.YELLOW)){
 				speed = 2;

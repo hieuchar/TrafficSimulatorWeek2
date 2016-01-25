@@ -15,7 +15,8 @@ public class TrafficWorld extends World {
 	private static final int NUMVCARS = 14;
 	private static final int NUMHROAD = 5;
 	private static final int NUMVROAD = 7;
-	private static final int CARWIDTH = 25;
+	private static final int CARWIDTH = 20;
+	private static final int LIGHTWIDTH = 10;
 	private static final int NUMCARONROAD = 2;
 	private static final int VGAP = (HEIGHT - (NUMHROAD * ROADWIDTH)) / (NUMHROAD - 1);
 	private static final int HGAP = (WIDTH - (NUMVROAD * ROADWIDTH)) / (NUMVROAD - 1);
@@ -64,7 +65,7 @@ public class TrafficWorld extends World {
 				Car temp = hCars[counter];
 				Orientation dir = temp.getOrientation();
 				temp.setRotation(dir.getRotation());
-				this.addObject(temp, rand.nextInt(WIDTH), (VGAP + ROADWIDTH) * x  +  (CARWIDTH / 2) +  (CARWIDTH * i));
+				this.addObject(temp, rand.nextInt(WIDTH), (VGAP + ROADWIDTH) * x  +  (CARWIDTH / 2) +  (CARWIDTH * i) + LIGHTWIDTH * i);
 				counter++;
 			}
 		}	
@@ -84,7 +85,7 @@ public class TrafficWorld extends World {
 				Car temp = vCars[counter];
 				Orientation dir = temp.getOrientation();
 				temp.setRotation(dir.getRotation());
-				this.addObject(temp, (HGAP + ROADWIDTH) * x  + (CARWIDTH / 2) +  (CARWIDTH * i), rand.nextInt(HEIGHT) );
+				this.addObject(temp, (HGAP + ROADWIDTH) * x  + (CARWIDTH / 2) +  (CARWIDTH * i) + LIGHTWIDTH * i, rand.nextInt(HEIGHT) );
 				counter++;
 			}
 		}
